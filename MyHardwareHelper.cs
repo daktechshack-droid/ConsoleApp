@@ -6,8 +6,9 @@ public static class MyHardwareHelper
         return Dns.GetHostName(); // Retrive the Name of HOST
     }
 
-    public static string GetMyIpAddress()
+    public static string[] GetMyIpAddress()
     {
+        var list = new List<string>();
         string hostName = GetMyComputerName(); 
         var myIP = Dns.GetHostEntry(hostName);
         foreach (IPAddress ip in Dns.GetHostEntry(hostName).AddressList)
@@ -15,9 +16,9 @@ public static class MyHardwareHelper
             if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
             {
                 var my = ip.MapToIPv4().ToString();
-                return my;
+                list.Add(my);
             }
         }
-        return "No IP Address Found";
+        return list.ToArray();
     }
 }

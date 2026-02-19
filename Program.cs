@@ -116,7 +116,11 @@ static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl)
             }
             if (getSelection.Key == ConsoleKey.D1)
             {
-                MyUIHelper.WriteAt("IP Address: " + MyHardwareHelper.GetMyIpAddress(), x + 1, y + 1);
+                var ipAddresses = MyHardwareHelper.GetMyIpAddress();
+                for (int i = 0; i < ipAddresses.Length; i++)
+                {
+                    MyUIHelper.WriteAt("IP Address " + (i + 1) + ": " + ipAddresses[i], x + 1, y + 1 + i);
+                }
                 MyUIHelper.WriteAt("Press any key!", x + 1, y + height - 2);
             }
             if (getSelection.Key == ConsoleKey.Q)

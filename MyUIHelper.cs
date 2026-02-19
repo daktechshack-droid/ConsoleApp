@@ -11,7 +11,7 @@ namespace MyFirstConsoleApp
             if (width < 2 || height < 2) return;
 
             // Ensure console outputs UTF-8 so Unicode box-drawing glyphs render
-#if false
+#if true
                 Console.OutputEncoding = Encoding.UTF8;
     
                 // Unicode box drawing characters (preferred over legacy code page values)
@@ -29,6 +29,7 @@ namespace MyFirstConsoleApp
                 char horizontal = '-'; 
                 char vertical = '|';   
 #endif
+            //topLeft = '*'; topRight = '*'; bottomLeft = '*'; bottomRight = '*'; horizontal = '*'; vertical = '*';
 
             // Corners
             Console.SetCursorPosition(startX, startY);
@@ -139,7 +140,7 @@ namespace MyFirstConsoleApp
             return MyUIHelper.ReadAndEditAt(x + prompt.Length, y, 20);
         }
 
-        public static string PromptReadline(int x, int y, string prompt)
+        public static string? PromptReadline(int x, int y, string prompt)
         {
             MyUIHelper.WriteAt(prompt, x, y);
             Console.SetCursorPosition(x + prompt.Length, y);
