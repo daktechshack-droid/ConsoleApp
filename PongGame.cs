@@ -5,12 +5,13 @@ public static class PongGame
 {
     public static void Start(int screenWidth = 80, int screenHeight = 25)
     {
-        var start = new MyPoint(10, 5);
+        var ballPos = new MyPoint(10, 5);
         var direction = new MyPoint(1, 1);
-        var last = new MyPoint(start);
+        var last = new MyPoint(ballPos);
         var batPos = new MyPoint(0, screenHeight - 2);
         var batLast = new MyPoint(batPos);
-        var batLength = 8;
+        var score = 0;
+        var batLength = 12;
         var batSpeed = 8;
         float speed  = 1f;
 
@@ -22,30 +23,48 @@ public static class PongGame
             Console.SetCursorPosition((int)last.X, (int)last.Y);
             Console.Write(" ");
 
-            Thread.Sleep(50); 
-            if (start.X > screenWidth - 2) direction.X = -speed;
+            Thread.Sleep(50);
+            if (ballPos.X > screenWidth - 2)
+            {
+                direction.X = -speed;
+                Console.Beep();
+            }
             //if (start.Y > screenHeight - 2) direction.Y = -speed;
-            
-            if (start.X < 1) direction.X = speed;
-            if (start.Y < 1) direction.Y = speed;
-            
-            last = new MyPoint(start);
 
-            if (batPos.X >= start.X && batPos.X <= start.X + batLength && start.Y == batPos.Y)
+            if (ballPos.X < 1)
+            {
+                direction.X = speed;
+                Console.Beep();
+            }
+            if (ballPos.Y < 1)
+            {
+                direction.Y = speed;
+                Console.Beep();
+            }
+            
+            last = new MyPoint(ballPos);
+
+            ballPos.X += direction.X;
+            ballPos.Y += direction.Y;
+            if (ballPos.X >= batPos.X && ballPos.X <= batPos.X + batLength && ballPos.Y == batPos.Y)
             {
                 direction.Y = -speed;
-                // do nothing
+                ballPos.Y += direction.Y;
+                score += 10;
+                Console.Beep();
             }
-            if (start.Y == screenHeight - 2)
+
+            MyUIHelper.WriteCentered($"SCORE: {score}", (int)(0));
+            Console.SetCursorPosition((int)ballPos.X, (int)ballPos.Y);
+            Console.Write("O");
+            if (ballPos.Y == screenHeight - 2)
             {
-                MyUIHelper.WriteAt("GAME OVER!!!", (int)(start.X + 1), (int)(start.Y));
+                Console.SetCursorPosition((int)last.X, (int)last.Y);
+                Console.Write(" ");
+                MyUIHelper.WriteCentered("GAME OVER!!!", (int)(ballPos.Y / 2));
                 break;
             }
-            start.X += direction.X;
-            start.Y += direction.Y;
 
-            Console.SetCursorPosition((int)start.X, (int)start.Y);
-            Console.Write("O");
             if (Console.KeyAvailable)
             {
                 var charPressed = Console.ReadKey(true).Key;
@@ -74,8 +93,10 @@ public static class PongGame
 
         }
         Console.CursorVisible = true;
-        MyUIHelper.WriteAt("Pong Game Ended - Press any key to exit", (int)(start.X + 1), (int)(start.Y + 1));
+        MyUIHelper.WriteCentered("Pong Game Ended - Press any key to exit", (int)(ballPos.Y + 1));
         Console.ReadKey(true);
+
+        MyUIHelper.ClearBox(0, 0, screenWidth, screenHeight);
     }
 
     public static void DrawBat(MyPoint p, MyPoint last, int length, int batSpeed)
@@ -89,7 +110,7 @@ public static class PongGame
         }
 
         Console.SetCursorPosition((int)p.X, (int)p.Y);
-        bat = new String('_', length);
+        bat = new String('^', length);
         Console.Write(bat);
     }
 }
