@@ -19,7 +19,7 @@ using (var db = new LiteDatabase(@"MyData.db"))
 {
     var ppl = db.GetCollection<Person>("People");
 
-    ShowMainMenu(screenHeight, ppl);
+    ShowMainMenu(screenHeight, ppl, screenWidth);
 
     //MyUIHelper.ClearBox(10, 10, 10, 5);            
 }
@@ -28,7 +28,7 @@ MyUIHelper.ClearBox(0, 0, screenWidth, screenHeight);
 MyUIHelper.WriteCentered("Press enter key to exit!", screenHeight - 2);
 Console.ReadKey(); // Wait for user input before closing the console
 
-static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl)
+static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, int screenWidth)
 {
     string[] menuItems = new string[]
     {
@@ -36,6 +36,7 @@ static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl)
         "1. Enter your person",
         "2. List all people",
         "3. Sub Menu",
+        "4. Pong Game",
         "Q. Exit"
     };    
 
@@ -81,6 +82,11 @@ static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl)
             SubMenu1(40, 8, 30, 5);
             continue;
         }
+        if (getSelection.Key == ConsoleKey.D4)
+        {
+            PongGame.Start(screenWidth, screenHeight);
+            continue;
+        }        
         if (getSelection.Key == ConsoleKey.Q)
         {
             MyUIHelper.ClearBox(20, 5, 40, 20);
