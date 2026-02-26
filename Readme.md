@@ -8,3 +8,5 @@ Deployed to cachyos, I did this
 ```
 dotnet publish -c Release -r linux-x64 --self-contained false
 ```
+
+<img width="1286" height="683" alt="image" src="https://github.com/user-attachments/assets/52f0b671-f4c3-4380-b671-f6a8074bc96c" />
