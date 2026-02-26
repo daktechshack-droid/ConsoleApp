@@ -28,7 +28,7 @@ MyUIHelper.ClearBox(0, 0, screenWidth, screenHeight);
 MyUIHelper.WriteCentered("Press enter key to exit!", screenHeight - 2);
 Console.ReadKey(); // Wait for user input before closing the console
 
-static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, int screenWidth)
+static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, int screenWidth)
 {
     string[] menuItems = new string[]
     {
@@ -37,6 +37,7 @@ static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, int scre
         "2. List all people",
         "3. Sub Menu",
         "4. Pong Game",
+        "5. Matrix Screen Saver",
         "Q. Exit"
     };    
 
@@ -87,6 +88,11 @@ static void ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, int scre
             PongGame.Start(screenWidth, screenHeight);
             continue;
         }        
+        if (getSelection.Key == ConsoleKey.D5)
+        {
+            await MyMatrixScreenSaver.Start(screenWidth, screenHeight);
+            continue;
+        }
         if (getSelection.Key == ConsoleKey.Q)
         {
             MyUIHelper.ClearBox(20, 5, 40, 20);

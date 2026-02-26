@@ -5,10 +5,11 @@ public static class PongGame
 {
     public static void Start(int screenWidth = 80, int screenHeight = 25)
     {
-        var ballPos = new MyPoint(10, 5);
+        var myObject = new MyObject(10, 5);
+        var ballPos = myObject.Position;
         var direction = new MyPoint(1, 1);
-        var last = new MyPoint(ballPos);
-        var batPos = new MyPoint(0, screenHeight - 2);
+        var lastBallPos = new MyPoint(ballPos);
+        var batPos = new MyPoint(screenWidth / 2, screenHeight - 2);
         var batLast = new MyPoint(batPos);
         var score = 0;
         var batLength = 12;
@@ -20,29 +21,29 @@ public static class PongGame
         MyUIHelper.WriteCentered("Pong Game - Press X to exit", screenHeight - 1);
         while (true)
         {
-            Console.SetCursorPosition((int)last.X, (int)last.Y);
+            Console.SetCursorPosition((int)lastBallPos.X, (int)lastBallPos.Y);
             Console.Write(" ");
 
             Thread.Sleep(50);
             if (ballPos.X > screenWidth - 2)
             {
                 direction.X = -speed;
-                Console.Beep();
+                Task.Run(() => Console.Beep(440, 500));
             }
             //if (start.Y > screenHeight - 2) direction.Y = -speed;
 
             if (ballPos.X < 1)
             {
                 direction.X = speed;
-                Console.Beep();
+                Task.Run(() => Console.Beep(440, 500));
             }
             if (ballPos.Y < 1)
             {
                 direction.Y = speed;
-                Console.Beep();
+                Task.Run(() => Console.Beep(440, 500));
             }
             
-            last = new MyPoint(ballPos);
+            lastBallPos = new MyPoint(ballPos);
 
             ballPos.X += direction.X;
             ballPos.Y += direction.Y;
@@ -51,15 +52,19 @@ public static class PongGame
                 direction.Y = -speed;
                 ballPos.Y += direction.Y;
                 score += 10;
-                Console.Beep();
+                myObject.AddTrailPoint(new MyObjectChar(ballPos, '.'));
+                Task.Run(() => Console.Beep(540, 500));
             }
 
             MyUIHelper.WriteCentered($"SCORE: {score}", (int)(0));
-            Console.SetCursorPosition((int)ballPos.X, (int)ballPos.Y);
-            Console.Write("O");
+
+            myObject.Draw();
+            //Console.SetCursorPosition((int)ballPos.X, (int)ballPos.Y);
+            //Console.Write("O");
             if (ballPos.Y == screenHeight - 2)
             {
-                Console.SetCursorPosition((int)last.X, (int)last.Y);
+                Task.Run(() => Console.Beep(240, 800));
+                Console.SetCursorPosition((int)lastBallPos.X, (int)lastBallPos.Y);
                 Console.Write(" ");
                 MyUIHelper.WriteCentered("GAME OVER!!!", (int)(ballPos.Y / 2));
                 break;
@@ -109,6 +114,8 @@ public static class PongGame
             Console.Write(bat);
         }
 
+        if(p.X < 0) p.X = 0;
+        if(p.X > Console.WindowWidth - length) p.X = Console.WindowWidth - length;
         Console.SetCursorPosition((int)p.X, (int)p.Y);
         bat = new String('^', length);
         Console.Write(bat);
