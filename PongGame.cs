@@ -30,7 +30,7 @@ public static class PongGame
                 direction.X = -speed;
                 Task.Run(() => Console.Beep(440, 500));
             }
-            //if (start.Y > screenHeight - 2) direction.Y = -speed;
+            //if (ballPos.Y > screenHeight - 2) direction.Y = -speed;
 
             if (ballPos.X < 1)
             {

@@ -38,6 +38,7 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
         "3. Sub Menu",
         "4. Pong Game",
         "5. Matrix Screen Saver",
+        "6. Matrix Screen Saver 2.0 Double Buffer",
         "Q. Exit"
     };    
 
@@ -90,7 +91,39 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
         }        
         if (getSelection.Key == ConsoleKey.D5)
         {
+            screenWidth = Console.WindowWidth;
+            screenHeight = Console.WindowHeight;
             await MyMatrixScreenSaver.Start(screenWidth, screenHeight);
+            continue;
+        }
+        if (getSelection.Key == ConsoleKey.D6)
+        {
+            screenWidth = Console.WindowWidth;
+            screenHeight = Console.WindowHeight;
+            await MyMatrixScreenSaver.StartBufferMode(screenWidth, screenHeight);
+            continue;
+        }
+        if (getSelection.Key == ConsoleKey.D7)
+        {
+            Random random = new Random();
+            while(true)
+            {
+                string row = new string((char)random.Next(37,127), screenWidth);
+                for (int i = 0; i < screenHeight; i++)
+                {
+                    Console.SetCursorPosition(0, i);
+                    Console.Write(row);
+                }
+                if (Console.KeyAvailable)
+                {
+                    var charPressed = Console.ReadKey(true).Key;
+                    if (charPressed == ConsoleKey.X)
+                    {
+                        break;
+                    }
+                }
+                Thread.Sleep(100);
+            }
             continue;
         }
         if (getSelection.Key == ConsoleKey.Q)

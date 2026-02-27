@@ -1,14 +1,19 @@
-using MyApp.Models;
+﻿using MyApp.Models;
+using System.Drawing;
 
 public class MyObject
 {
     public MyPoint Position { get; set; }
     public List<MyObjectChar> Trail { get; set; }
 
+    private readonly object _lock = new object();
     public int TrailLength { get; set; }
+
+    public bool Drawing { get; set; }
 
     public MyObject(int x, int y, int trailLength = 10)
     {
+        Drawing = false;
         Position = new MyPoint(x, y);
         Trail = new List<MyObjectChar>();
         TrailLength = trailLength;
@@ -28,7 +33,7 @@ public class MyObject
         }
     }
     
-    static ConsoleColor[] greenFade = { 
+    static ConsoleColor[] greenFade3 = { 
             ConsoleColor.Green, 
             ConsoleColor.Green, 
             ConsoleColor.Green, 
@@ -52,27 +57,83 @@ public class MyObject
             ConsoleColor.DarkGreen, 
             ConsoleColor.Gray,
             ConsoleColor.DarkGray,
-        };    
+        };
+
+    static string[] greenFade =
+    {
+        "\u001b[38;5;46m",
+        "\u001b[38;5;46m",
+        "\u001b[38;5;40m",
+        "\u001b[38;5;40m",
+        "\u001b[38;5;34m",
+        "\u001b[38;5;34m",
+        "\u001b[38;5;28m",
+        "\u001b[38;5;28m",
+        "\u001b[38;5;22m",
+        "\u001b[38;5;22m",
+        "\u001b[38;5;22m",
+        "\u001b[38;5;0m"
+    };
 
     Random rnd = new Random();
+
+    public void Move(MyPoint myPoint)
+    {
+        lock (_lock)
+        {
+            Position.X += myPoint.X;
+            Position.Y += myPoint.Y;
+        }
+    }
+
     public void Draw()
     {
-        Console.SetCursorPosition((int)Trail[0].Position.X, (int)Trail[0].Position.Y);
-        Console.Write(' ');
-        
-        Trail.RemoveAt(0);
-        Trail.Add(new MyObjectChar(Position, (char)rnd.Next(32, 127)));
-        int g = greenFade.Length - 1;
-        foreach (var point in Trail)
+        lock (_lock)
         {
-            Console.SetCursorPosition((int)point.Position.X, (int)point.Position.Y);
-            Console.ForegroundColor = greenFade[g];
-            Console.Write(point.Character);
-            g--;
-            if (g < 0) g = 0;
+            Drawing = true;
+            Console.SetCursorPosition((int)Trail[0].Position.X, (int)Trail[0].Position.Y);
+            Console.Write(' ');
+
+            Trail.RemoveAt(0);
+            Trail.Add(new MyObjectChar(Position, (char)rnd.Next(32, 127)));
+            int g = greenFade3.Length - 1;
+            foreach (var point in Trail)
+            {
+                Console.SetCursorPosition((int)point.Position.X, (int)point.Position.Y);
+                Console.ForegroundColor = greenFade3[g];
+                Console.Write(point.Character);
+                g--;
+                if (g < 0) g = 0;
+            }
+            Console.ResetColor();
+            Console.SetCursorPosition((int)Position.X, (int)Position.Y);
+            Console.Write("O");
+            //Thread.Sleep(50);
+            Drawing = false;
         }
-        Console.ResetColor();
-        Console.SetCursorPosition((int)Position.X, (int)Position.Y);
-        Console.Write("O");
     }
+
+    public void DrawToBuffer(MyBuffer myBuffer)
+    {
+        Random random = new Random();
+        lock (_lock)
+        {            
+            Drawing = true;
+            myBuffer.SetChar((int)Trail[0].Position.X, (int)Trail[0].Position.Y, ' ', string.Empty);
+
+            Trail.RemoveAt(0);
+            Trail.Add(new MyObjectChar(Position, (char)rnd.Next(32, 127)));
+            int g = greenFade.Length - 1;
+            foreach (var point in Trail)
+            {
+                myBuffer.SetChar((int)point.Position.X, (int)point.Position.Y, point.Character, greenFade[g]);
+
+                g--;
+                if (g < 0) g = 0;
+            }
+            myBuffer.SetChar((int)Position.X, (int)Position.Y, (char)960, "\u001b[97m");
+            Drawing = false;
+        }
+    }
+
 }

@@ -94,6 +94,11 @@ namespace MyFirstConsoleApp
         {
             if(menuItems == null || menuItems.Count() == 0) return; // Ensure menuItems is not null to avoid exceptions
             if(menuItems.Count() + 2 > height) height = menuItems.Count() + 2; // Ensure menuItems is not null to avoid exceptions
+            int maxLen = menuItems.ToList().Max(x => x.Length);
+            if (maxLen + 2 > width)
+            {
+                width = maxLen + 2;
+            }
             MyUIHelper.ClearBox(x, y, width, height);                
             MyUIHelper.DrawBox(x, y, width, height);
 
