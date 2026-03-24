@@ -1,5 +1,6 @@
 ﻿
 using LiteDB;
+using MyApp;
 using MyApp.Models;
 using MyFirstConsoleApp;
 using System;
@@ -41,6 +42,7 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
         "5. Matrix Screen Saver",
         "6. Matrix Screen Saver 2.0 Double Buffer",
         "7. Circle",
+        "8. Pictures",
         "Q. Exit"
     };    
 
@@ -116,27 +118,34 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
         }
         if (getSelection.Key == ConsoleKey.D8)
         {
-            Random random = new Random();
-            while(true)
-            {
-                string row = new string((char)random.Next(37,127), screenWidth);
-                for (int i = 0; i < screenHeight; i++)
-                {
-                    Console.SetCursorPosition(0, i);
-                    Console.Write(row);
-                }
-                if (Console.KeyAvailable)
-                {
-                    var charPressed = Console.ReadKey(true).Key;
-                    if (charPressed == ConsoleKey.X)
-                    {
-                        break;
-                    }
-                }
-                Thread.Sleep(100);
-            }
+            screenWidth = Console.WindowWidth;
+            screenHeight = Console.WindowHeight;
+            await MyPictures.StartBufferMode(screenWidth, screenHeight);
             continue;
         }
+        //if (getSelection.Key == ConsoleKey.D8)
+        //{
+        //    Random random = new Random();
+        //    while(true)
+        //    {
+        //        string row = new string((char)random.Next(37,127), screenWidth);
+        //        for (int i = 0; i < screenHeight; i++)
+        //        {
+        //            Console.SetCursorPosition(0, i);
+        //            Console.Write(row);
+        //        }
+        //        if (Console.KeyAvailable)
+        //        {
+        //            var charPressed = Console.ReadKey(true).Key;
+        //            if (charPressed == ConsoleKey.X)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        Thread.Sleep(100);
+        //    }
+        //    continue;
+        //}
         if (getSelection.Key == ConsoleKey.Q || getSelection.Key == ConsoleKey.X)
         {
             MyUIHelper.ClearBox(20, 5, 40, 20);
