@@ -57,7 +57,8 @@ namespace MyApp
             while (true)
             {
                 string filename = files[i];
-                ReadFromFileSixLabors(filename, screenWidth, screenHeight, myBuffer);
+                ReadFromFile(filename, screenWidth, screenHeight, myBuffer);
+                //ReadFromFileSixLabors(filename, screenWidth, screenHeight, myBuffer);
 
                 myBuffer.SetString(screenWidth / 2, 0, "Press X to exit", "\u001b[97m");
                 myBuffer.Render();
@@ -96,10 +97,11 @@ namespace MyApp
 
                     // 3. Get the color code (Mapping 0-255 to 0-11)
                     int colorIndex = (brightness * (grayFade12.Length - 1)) / 255;
-                    string colorCode = grayFade12[colorIndex];
+                    string colorCode = grayFade12[grayFade12.Length - 1 - colorIndex];
 
                     char asciiChar = ramp[index];                    // Process the pixel (e.g., change color, check values)
-                    myBuffer.SetChar(i, j, asciiChar, colorCode);
+                    //myBuffer.SetChar(i, j, asciiChar, "");
+                    myBuffer.SetChar(i, j, 'o', colorCode);
                     // To set a pixel, use bmp.SetPixel(i, j, newColor);
                 }
             }
