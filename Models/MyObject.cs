@@ -4,6 +4,8 @@ using System.Drawing;
 public class MyObject
 {
     public MyPoint Position { get; set; }
+
+    public int Angle { get; set; }
     public List<MyObjectChar> Trail { get; set; }
 
     private readonly object _lock = new object();
@@ -75,6 +77,22 @@ public class MyObject
         "\u001b[38;5;0m"
     };
 
+    static string[] greenFade4 =
+    {
+        "\u001b[38;5;66m",
+        "\u001b[38;5;66m",
+        "\u001b[38;5;60m",
+        "\u001b[38;5;60m",
+        "\u001b[38;5;54m",
+        "\u001b[38;5;54m",
+        "\u001b[38;5;48m",
+        "\u001b[38;5;48m",
+        "\u001b[38;5;42m",
+        "\u001b[38;5;42m",
+        "\u001b[38;5;42m",
+        "\u001b[38;5;0m"
+    };
+
     Random rnd = new Random();
 
     public void Move(MyPoint myPoint)
@@ -113,12 +131,13 @@ public class MyObject
         }
     }
 
-    public void DrawToBuffer(MyBuffer myBuffer)
+    public void DrawToBuffer(MyBuffer myBuffer, bool dontClear = false)
     {
         Random random = new Random();
         lock (_lock)
         {            
             Drawing = true;
+            if(!dontClear)
             myBuffer.SetChar((int)Trail[0].Position.X, (int)Trail[0].Position.Y, ' ', string.Empty);
 
             Trail.RemoveAt(0);
@@ -132,6 +151,28 @@ public class MyObject
                 if (g < 0) g = 0;
             }
             myBuffer.SetChar((int)Position.X, (int)Position.Y, (char)960, "\u001b[97m");
+            Drawing = false;
+        }
+    }
+
+    public void DrawToBufferDiff(MyBuffer myBuffer, char character)
+    {
+        Random random = new Random();
+        lock (_lock)
+        {
+            Drawing = true;
+
+            Trail.RemoveAt(0);
+            Trail.Add(new MyObjectChar(Position, character));
+            int g = greenFade4.Length - 1;
+            foreach (var point in Trail)
+            {
+                myBuffer.SetChar((int)point.Position.X, (int)point.Position.Y, 'o', greenFade[g]);
+
+                g--;
+                if (g < 0) g = 0;
+            }
+            myBuffer.SetChar((int)Position.X, (int)Position.Y, character, "\u001b[97m");
             Drawing = false;
         }
     }

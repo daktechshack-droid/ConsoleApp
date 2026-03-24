@@ -1,7 +1,8 @@
 ﻿
-using MyFirstConsoleApp;
 using LiteDB;
 using MyApp.Models;
+using MyFirstConsoleApp;
+using System;
 
 Console.WriteLine("Learning new things!");
 
@@ -39,12 +40,13 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
         "4. Pong Game",
         "5. Matrix Screen Saver",
         "6. Matrix Screen Saver 2.0 Double Buffer",
+        "7. Circle",
         "Q. Exit"
     };    
 
     while (true)
     {
-        MyUIHelper.BuildMenu(20, 5, 40, 6, menuItems);
+        MyUIHelper.BuildMenu(5, 5, 40, 6, menuItems);
         var getSelection = Console.ReadKey(); // Wait for user input before closing the console
         if (getSelection.Key == ConsoleKey.D1)
         {
@@ -86,7 +88,8 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
         }
         if (getSelection.Key == ConsoleKey.D4)
         {
-            PongGame.Start(screenWidth, screenHeight);
+            //PongGame.Start(screenWidth, screenHeight);
+            PongGameBuffer.Start(screenWidth, screenHeight);
             continue;
         }        
         if (getSelection.Key == ConsoleKey.D5)
@@ -104,6 +107,14 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
             continue;
         }
         if (getSelection.Key == ConsoleKey.D7)
+        {
+            screenWidth = Console.WindowWidth;
+            screenHeight = Console.WindowHeight;
+            //MyCircles.Start(screenWidth, screenHeight);
+            await MyCircles.StartBufferMode2(screenWidth, screenHeight);
+            continue;
+        }
+        if (getSelection.Key == ConsoleKey.D8)
         {
             Random random = new Random();
             while(true)
@@ -126,7 +137,7 @@ static async Task ShowMainMenu(int screenHeight, ILiteCollection<Person> ppl, in
             }
             continue;
         }
-        if (getSelection.Key == ConsoleKey.Q)
+        if (getSelection.Key == ConsoleKey.Q || getSelection.Key == ConsoleKey.X)
         {
             MyUIHelper.ClearBox(20, 5, 40, 20);
             break;

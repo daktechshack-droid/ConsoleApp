@@ -42,6 +42,26 @@ namespace MyApp.Models
             }
         }
 
+        public void SetString(int x, int y, string text, string color)
+        {
+            foreach (char c in text)
+            {
+                if (x >= 0 && x < Width && y >= 0 && y < Height)
+                {
+                    buffer[x, y] = c;
+                    if (!string.IsNullOrWhiteSpace(color))
+                        colorbuffer[x, y] = color;
+                }
+                x++;
+            }
+        }
+
+        public void WriteCentered(int y, string text, int screenWidth, string color)
+        {
+            int x = (screenWidth - text.Length) / 2;
+            SetString(x, y, text, color);            
+        }
+
         public void Render()
         {
             Console.SetCursorPosition(0, 0);
